@@ -1,0 +1,332 @@
+@charset "UTF-8";
+
+:root{
+    --sm: 576px;
+    --md: 768px;
+    --lg: 992px;
+    --pageMaxWidth: 1200px;
+    --backgroundColor: white;
+    --backgroundColorSideways: lavender; 
+    --mainFont: Verdana, Geneva, sans-serif; 
+    /* --mainFont:  system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; */
+    --inputFont: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    --defaultFontSize: 1.2rem;
+    --defaultMargin: 1rem;
+    --defaultPadding: 0.5em;
+    --defaultBorderRadius: 0.3em;
+    --headerPadding: 0.8vw;
+    --headerColor: #0074d9;
+    --backColorLight: lavender; 
+    --backColorBlue:#0074d9;
+    --backColorGreen: #2ecc40;
+    --backColorOrange: #ff851b;
+    --backColorRed: #ff4136;
+    --backColorGrey: #aaa;
+    --backColorPurple: #9b27b0;
+}
+
+html {
+  font-family: var(--mainFont);
+  background-color: var(--backgroundColorSideways);
+  font-size: var(--defaultFontSize);
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  margin: auto; /*centers body*/
+  max-width: min(var(--pageMaxWidth),100vw);
+  box-sizing: border-box;
+  color: #111;
+  line-height: 1.5;
+  background: var(--backgroundColor); 
+}
+/*<main> or all body elements if <main> does not exist.e*/
+body>*:not(header){margin: 0 2vw}  
+body * {box-sizing: border-box;}
+ 
+
+
+/* Text-level semantics 
+   ========================================================================== */
+
+h1,h2,h3,h4,h5,h6 {
+  font-weight: bold;
+  margin: calc(2*var(--defaultMargin)) 0 var(--defaultMargin) 0;
+  padding: 0;
+}
+p{margin: var(--defaultMargin) 0;}
+.bold {font-weight: bold; }
+.italics {font-style: italic; }
+.underlined {text-decoration: underline;}
+
+
+/* Embedded content  Images and Links   - Dimitris
+  ========================================================================== */
+img, center, .center, figure {
+display: block;
+margin-left: auto;		
+margin-right: auto;		
+text-align: center;	/*text inside figure*/
+max-width: 100vw; /*for img*/
+}
+
+a{
+  text-decoration: none;
+  box-shadow: none;
+  transition: all 0.3s; 
+  font-weight: bold;
+  color: Blue;
+}
+a:hover,a:focus{
+  color:navy;
+  outline:none;
+}
+
+
+/* Lists
+  ========================================================================== */
+
+ol, ul, dd{
+  margin-top: 0.1em;
+  margin-left: var(--defaultMargin);
+}
+li {
+  margin: 0 0 0.3em; }
+  
+
+
+ /* Header Navigation
+ It is here in order to override elements (like a,ul, img)
+    ========================================================================== */
+
+header{
+  margin: var(--defaultMargin) 0;   /*will be overridden if sticky*/
+  background-color:var(--headerColor);
+  color: white;
+}
+header:first-child:not(.no-sticky){  /*sticky header*/
+  position: sticky;
+  top: 0;
+  margin: 0;
+  z-index: 999;
+} 
+header,header nav>ul{    /*header and nav flexboxes*/
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;  /*vertical aling, when big logo*/
+  list-style-type: none; 
+  padding: var(--defaultPadding);   /*looks better on mobile than headerPadding*/
+  row-gap:0.2em;
+}
+@media (max-width: 992px) {   /*center items when wrapped (on mobile)*/
+  header, header nav>ul {justify-content:space-around}
+}
+
+header * {    
+  margin: 0;
+  padding: 0 var(--headerPadding);
+  background-color: inherit;
+  color: white;
+}
+header a, header img{
+  display: inline-block; /*Σημαντικό, αλλιώς χαλάει πχ σε header>div>a>h2, ή επειδή έχω block τα img*/
+  max-height: 5rem;   /*img attribute must be smaller*/
+}
+header a[href="#"]{display: flex;align-items: center;}
+
+    
+  
+
+      
+/* Various Weird
+========================================================================== */
+
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em; }
+code {
+  padding: 0.3em 0.6em;
+  background: #f5f5f5; 
+}
+kbd{
+  color: white; 
+  background-color: black;
+  padding: 0.1em 0.4em;
+  border-radius: var(--defaultBorderRadius); 
+}
+pre {
+  text-align: left;
+  padding: 0.3em 0.6em;
+  background: #f5f5f5;
+  border-radius: var(--defaultBorderRadius); 
+  overflow: auto; 
+}
+pre code {
+  padding: 0; }
+blockquote {
+  padding: 0 0 0 1em;
+  margin: 0 0 0 .1em;
+  box-shadow: inset 5px 0 DodgerBlue; }
+hr {
+  margin: var(--defaultMargin) 0;
+  height: 0; }
+sub,sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline; }
+sup {
+  top: -0.5em; }
+sub {
+  bottom: -0.25em; }
+
+
+   
+/* Tables
+    ========================================================================== */
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; 
+  text-align: left; 
+  border: 1px solid var(--backColorLight);
+}
+td,th {
+  padding: var(--defaultPadding) calc(2*var(--defaultPadding)) 
+}
+th {
+  text-align: left;
+  font-weight: bold;
+  color: #fff;
+  background-color: var(--backColorBlue) 
+}
+tr:nth-child(even) {background: var(--backColorLight)}
+    
+
+
+/* Buttons
+   ========================================================================== */
+
+button, .button, [type=submit], [type=reset], [type=button] {
+  display: inline-block;
+  margin: 0.4em 0.2em;
+  padding: var(--defaultPadding) calc(2*var(--defaultPadding));
+  border: 0;
+  border-radius: var(--defaultBorderRadius);
+  /* font-family: var(--mainFont); */
+  font-size: 1.1rem;
+  line-height: initial;  /* λόγω <a type="button">"*/
+  background: var(--backColorBlue);
+  color: #fff !important;  /*important λόγω <a type="button">"*/
+  cursor: pointer;
+  transition: all 0.4s;
+}
+[type=submit], [type=reset], button.small, .button.small{
+  /* font-family: var(--inputFont); */
+  font-size: 1rem;
+}
+button:hover, .button:hover, [type=submit]:hover, [type=reset]:hover, [type=button]:hover{
+  filter: opacity(80%);
+}
+button:active, .button:active, [type=submit]:active, [type=reset]:active, [type=button]:active{
+  filter: brightness(95%);
+}
+
+
+
+/* Forms
+    ========================================================================== */
+
+fieldset {
+  border: 0.13em solid rgb(173, 202, 230);
+}
+legend {
+  font-size:larger;
+  margin: 0;
+  padding: var(--defaultPadding);
+  border: 0;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: .5rem;
+}
+
+input, textarea, select{  
+  font-family: var(--inputFont);
+  font-size: inherit;
+  line-height: inherit;
+  padding: calc(var(--defaultPadding)/2) var(--defaultPadding);
+  background-color: transparent;
+  border: 0.1em solid hsl(0, 0%, 75%);
+  border-radius: var(--defaultBorderRadius);
+}
+input:is([type="text"],[type="password"],[type="number"],[type="tel"],[type="date"],[type="search"],[type="url"]),textarea,select{
+  min-width: 30ch;
+}
+input[type="file"]{
+  padding: calc(1.3*var(--defaultPadding)) calc(var(--defaultPadding)*2);
+}
+input:focus:not([type=submit],[type=reset]), textarea:focus, select:focus{
+  border: 0.13em solid rgb(173, 202, 230);
+  outline: 0;
+  background-color: hsl(240, 100%, 99%);
+}
+
+
+/*======================================  CLASSES  ====================================*/
+/*====================================================================================*/
+
+ /* Colors and Coloring
+    ========================================================================== */
+
+/*For text*/
+.red:is(p,h1,h2,h3,h4,span,a){color:red}
+.blue:is(p,h1,h2,h3,h4,span,a){color:blue}
+.green:is(p,h1,h2,h3,h4,span,a){color:green}
+.grey:is(p,h1,h2,h3,h4,span,a){color:grey}
+.white:is(p,h1,h2,h3,h4,span,a){color:white}
+
+/*For buttons th nav*/
+.red:is(button,.button,[type=button],th,nav,header), [type=reset]{background: var(--backColorRed);}
+.blue:is(button,.button,[type=button],th,nav,header){background: var(--backColorBlue);}
+.green:is(button,.button,[type=button],th,nav,header){background: var(--backColorGreen);}
+.orange:is(button,.button,[type=button],th,nav,header){background: var(--backColorOrange);}
+.purple:is(button,.button,[type=button],th,nav,header){background: var(--backColorPurple);}
+.grey:is(button,.button,[type=button],th,nav,header){background: var(--backColorGrey);}
+
+/*Slim containers*/
+.sm, .md, .lg{margin-left: auto; margin-right: auto;}
+.sm{max-width: var(--sm);}
+.md{max-width: var(--md);}
+.lg{max-width: var(--lg);}
+
+/***************     Layout classes     ********/
+.center-content{
+	display: grid;
+  place-items: center;
+}
+.columns{
+	column-count: 2;	 /* max columns */
+	column-width: 35ch;  /* min-width*/
+	column-gap: 2em;
+}
+.sticky { /* header,  */
+	z-index: 999;
+	position: sticky;
+	top: 0;
+}  
+aside {
+  /* width: 40%; */
+  padding-left: .5rem;
+  margin-left: .5rem;
+  float: right;
+  border-left: 2px solid grey;
+  font-style: italic;
+  color: grey;
+}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Send a secret</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
+    <link rel="stylesheet" media="screen" href="landing.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js" integrity="sha512-zDvrqenA0eFJZCxBsryzUZcvihvNlEXbteMv62yRxdhR4s7K1aaz+LjsRyfk6M+YJLyAJEuuquIAI8I8GgLC8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> -->
+
+
+    <style>
+        header {background-color: brown;}
+        main{padding: 20px}
+        input,textarea{display:block;width: 100%;}
+        textarea {resize: none}
+    </style>
+</head>
+<body>
+
+        
+	<header >
+		<div class="center"> 
+			<a href="/">
+                <img src="https://lh3.googleusercontent.com/a-/AOh14GgNSEq1Zp7vNLUscaEcvEXWOEWQpLybI5YU1dBCMA" height="200px"/>
+                <h2>Dimitris Vainanidis</h2>
+                <h1>Send me a secret message!</h1>
+            </a>
+		</div>
+	</header>
+    
+    <main class="container m-5">
+
+        <label for="plainInput" class="form-label">Type your message here</label>
+        <textarea id="plainInput" class="form-control" rows="2"></textarea>
+        <br>
+        <form action="/send.html" method="post">
+            <!-- <label for="sender" class="form-label">Optionally, type your first name or something that identifies you (unencrypted)</label>
+            <input id="sender" class="form-control" name="sender">
+            <br> -->
+            <label for="antiSpamInput" class="form-label">Type the anti-spam phrase that I gave you</label>
+            <input id="antiSpamInput" class="form-control" name="antispam">
+            <br>
+            <label for="encryptedArea" class="form-label">This is the text that will be transmitted via the internet:</label>
+            <textarea id="encryptedArea" class="form-control" rows="3" name="message" readonly></textarea>
+            <br>
+            <div class="center-content"><button type="submit" class="purple">Send the message</button></div>
+
+        </form>
+        
+        <hr>
+        <p><small>Encryption algorithm: RSA, implemented by <a href="https://github.com/travist/jsencrypt" target="_blank">jsencrypt</a></small><br/>
+            <small>Decryption algorithm: RSA, implemented by <a href="https://nodejs.org/api/crypto.html" target="_blank">crypto </a>(node.js package)</small></p>
+            ©2021 Dimitris Vainanidis
+        <br>
+
+        <div id="testinput"></div>
+    </main>
+
+
+<script>
+$(window).on('load',function(){
+
+    var publicKey = `-----BEGIN PUBLIC KEY-----
+        MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDlOJu6TyygqxfWT7eLtGDwajtN
+        FOb9I5XRb6khyfD1Yt3YiCgQWMNW649887VGJiGr/L5i2osbl8C9+WJTeucF+S76
+        xFxdU6jE0NQ+Z+zEdhUTooNRaY5nZiu5PgDB0ED/ZKBUSLKL7eibMxZtMlUDHjm4
+        gwQco1KRMDSmXSMkDwIDAQAB
+        -----END PUBLIC KEY-----`;
+    // var setPrivateKey = `-----BEGIN RSA PRIVATE KEY-----
+    //     MIICXQIBAAKBgQDlOJu6TyygqxfWT7eLtGDwajtNFOb9I5XRb6khyfD1Yt3YiCgQ
+    //     WMNW649887VGJiGr/L5i2osbl8C9+WJTeucF+S76xFxdU6jE0NQ+Z+zEdhUTooNR
+    //     aY5nZiu5PgDB0ED/ZKBUSLKL7eibMxZtMlUDHjm4gwQco1KRMDSmXSMkDwIDAQAB
+    //     AoGAfY9LpnuWK5Bs50UVep5c93SJdUi82u7yMx4iHFMc/Z2hfenfYEzu+57fI4fv
+    //     xTQ//5DbzRR/XKb8ulNv6+CHyPF31xk7YOBfkGI8qjLoq06V+FyBfDSwL8KbLyeH
+    //     m7KUZnLNQbk8yGLzB3iYKkRHlmUanQGaNMIJziWOkN+N9dECQQD0ONYRNZeuM8zd
+    //     8XJTSdcIX4a3gy3GGCJxOzv16XHxD03GW6UNLmfPwenKu+cdrQeaqEixrCejXdAF
+    //     z/7+BSMpAkEA8EaSOeP5Xr3ZrbiKzi6TGMwHMvC7HdJxaBJbVRfApFrE0/mPwmP5
+    //     rN7QwjrMY+0+AbXcm8mRQyQ1+IGEembsdwJBAN6az8Rv7QnD/YBvi52POIlRSSIM
+    //     V7SwWvSK4WSMnGb1ZBbhgdg57DXaspcwHsFV7hByQ5BvMtIduHcT14ECfcECQATe
+    //     aTgjFnqE/lQ22Rk0eGaYO80cc643BXVGafNfd9fcvwBMnk0iGX0XRsOozVt5Azil
+    //     psLBYuApa66NcVHJpCECQQDTjI2AQhFc1yRnCU/YgDnSpJVm1nASoRUnU8Jfm3Oz
+    //     uku7JUXcVpt08DFSceCEX9unCuMcT72rAQlLpdZir876
+    //     -----END RSA PRIVATE KEY-----`;
+    var encrypt = new JSEncrypt();
+    encrypt.setPublicKey(publicKey);
+    // var decrypt = new JSEncrypt();
+    // decrypt.setPrivateKey(setPrivateKey);
+    var encryptedText = '';
+
+    $('#plainInput').on('input',function(){   //not arrow, so this = plainInput
+        let encryptedText = this.value.length>1 ? encrypt.encrypt(this.value) :'';
+        if (encryptedText == false) {
+            $('#encryptedArea').val("error - try to send a smaller text");
+            $('#plainInput').css('border-color', 'red').css('background-color', 'orange');
+        }
+        else {
+            $('#encryptedArea').val(encryptedText)
+            $('#plainInput').css('border-color', "").css('background-color', ""); //όχι null!
+        }
+        // console.log(decrypt.decrypt(encryptedText));
+        // $('#testinput').text(decrypt.decrypt(encryptedText));
+    });
+
+});
+</script>
+
+
+</body>
+</html>
