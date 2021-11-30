@@ -49,9 +49,9 @@
             <input id="antiSpamInput" class="form-control" name="antispam">
             <br>
             <label for="encryptedArea" class="form-label">This is the text that will be transmitted via the internet:</label>
-            <textarea id="encryptedArea" class="form-control" rows="3" name="message" readonly></textarea>
+            <textarea id="encryptedArea" class="form-control" rows="3" name="message" readonly required></textarea>
             <br>
-            <div class="center-content"><button type="submit" class="purple">Send the message</button></div>
+            <div class="center-content"><button type="submit" class="purple" id="submitMessage" disabled>Send the message</button></div>
 
         </form>
         
@@ -101,16 +101,19 @@ $(window).on('load',function(){
             if (encryptedText == false) {
                 $('#encryptedArea').val("encryption error - try to send a smaller text");
                 $('#plainInput').css('border-color', 'red').css('background-color', 'orange');
+                // $('#submitMessage').prop("disabled",true); 
             }
             else {
                 $('#encryptedArea').val(encryptedText)
                 $('#plainInput').css('border-color', "").css('background-color', ""); //όχι null!
+                $('#submitMessage').prop("disabled",false); 
             }
             // console.log(decrypt.decrypt(encryptedText));
             // $('#testinput').text(decrypt.decrypt(encryptedText));
         } else {
             $('#encryptedArea').val("");
-            $('#plainInput').css('border-color', "").css('background-color', "")
+            $('#plainInput').css('border-color', "").css('background-color', "")//όχι null!
+            $('#submitMessage').prop("disabled",true); 
         }
     });
 

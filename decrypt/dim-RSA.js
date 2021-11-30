@@ -44,11 +44,11 @@ function decrypt(textToDecrypt) {
 
   //Just for testing 
   /*
-  let enc = encrypt("kinky Dim");
+  let enc = encrypt("Testing encryption and decryption by Dimitris... Success!");
   console.log(enc);
   let dec = decrypt(enc);
   console.log(dec);
-*/
+  */
 
  module.exports = {encrypt,decrypt};
 

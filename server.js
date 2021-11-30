@@ -4,11 +4,13 @@
 const express = require('express');
 const server = express();
 require('dotenv').config();          //it needs that! 
+const fetch = require('node-fetch');   //jshint ignore:line     
 const {decrypt} = require('./decrypt/dim-RSA.js');  //{encrypt, decrypt}
+
 const port = process.env.PORT || 80;
 const antispam = process.env.ANTISPAM;
-const fetch = require('node-fetch');   //jshint ignore:line     
-
+const isDev = (process.env.ENVIRONMENT=='development'); 
+const environment = isDev ? "Development" : "Production";
 
 let presentTime = () => new Date().toLocaleString('el-GR',{hour12: false});
 /* //this is what we got from PushBullet API
@@ -20,14 +22,14 @@ https://api.pushbullet.com/v2/pushes`;
 */
 //converted cURL request (from PushBullet API - https://docs.pushbullet.com/#push) 
 //to a Noje.js request using https://curlconverter.com/#node-fetch
-let RequestToPushbullet = () => {
+let RequestToPushbullet = (messageBody) => {
         fetch('https://api.pushbullet.com/v2/pushes', {
         method: 'POST',
         headers: {
             'Access-Token': process.env.PUSHBULLET_API_KEY,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({"body":"You have a new Secret Message","title":"Secret","type":"note"})
+        body: JSON.stringify({"body":messageBody,"title":"Secret message","type":"note"})
     });
 };
 
@@ -48,11 +50,11 @@ server.post('/send.html',function (req, res){
         let decrypted = decrypt(messageRecieved);
         let messageObject = {message:decrypted,time:presentTime()};
         console.log(messageObject);
-        RequestToPushbullet();
+        if (!isDev) {RequestToPushbullet(decrypted)}
         res.status(202).send("Your Message was sent successfully to Dimitris");
     }
 });
 
 server.listen(port, () => {
-    console.log(`Server is listening at http://localhost:${port}. Started at: ${presentTime()}`);
+    console.log(`${environment} server is listening at http://localhost:${port}. Started at: ${presentTime()}`);
 });
