@@ -12,7 +12,7 @@
     <link rel="stylesheet" media="screen" href="landing.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js" integrity="sha512-zDvrqenA0eFJZCxBsryzUZcvihvNlEXbteMv62yRxdhR4s7K1aaz+LjsRyfk6M+YJLyAJEuuquIAI8I8GgLC8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="jsencrypt.min.js" integrity="sha512-zDvrqenA0eFJZCxBsryzUZcvihvNlEXbteMv62yRxdhR4s7K1aaz+LjsRyfk6M+YJLyAJEuuquIAI8I8GgLC8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> -->
 
 
@@ -96,17 +96,22 @@ $(window).on('load',function(){
     var encryptedText = '';
 
     $('#plainInput').on('input',function(){   //not arrow, so this = plainInput
-        let encryptedText = this.value.length>1 ? encrypt.encrypt(this.value) :'';
-        if (encryptedText == false) {
-            $('#encryptedArea').val("error - try to send a smaller text");
-            $('#plainInput').css('border-color', 'red').css('background-color', 'orange');
+        if (this.value.length>1) {
+            let encryptedText = encrypt.encrypt(this.value);
+            if (encryptedText == false) {
+                $('#encryptedArea').val("encryption error - try to send a smaller text");
+                $('#plainInput').css('border-color', 'red').css('background-color', 'orange');
+            }
+            else {
+                $('#encryptedArea').val(encryptedText)
+                $('#plainInput').css('border-color', "").css('background-color', ""); //όχι null!
+            }
+            // console.log(decrypt.decrypt(encryptedText));
+            // $('#testinput').text(decrypt.decrypt(encryptedText));
+        } else {
+            $('#encryptedArea').val("");
+            $('#plainInput').css('border-color', "").css('background-color', "")
         }
-        else {
-            $('#encryptedArea').val(encryptedText)
-            $('#plainInput').css('border-color', "").css('background-color', ""); //όχι null!
-        }
-        // console.log(decrypt.decrypt(encryptedText));
-        // $('#testinput').text(decrypt.decrypt(encryptedText));
     });
 
 });

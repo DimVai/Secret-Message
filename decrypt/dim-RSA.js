@@ -18,7 +18,7 @@ const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
 const publicKey = fs.readFileSync(publicKeyPath, 'utf8');
 // console.log(path.resolve(__dirname,'./private.pem'));
 // console.log(privateKey);
-console.log(publicKey);
+// console.log(publicKey);
 
 function encrypt(textToEncrypt) {
     const buffer = Buffer.from(textToEncrypt, 'utf8');
