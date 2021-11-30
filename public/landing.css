@@ -101,16 +101,19 @@ li {
     ========================================================================== */
 
 header{
-  margin: var(--defaultMargin) 0;   /*will be overridden if sticky*/
+  margin: 0 0 var(--defaultMargin) 0;
   background-color:var(--headerColor);
   color: white;
 }
-header:first-child:not(.no-sticky){  /*sticky header*/
-  position: sticky;
-  top: 0;
-  margin: 0;
-  z-index: 999;
-} 
+@media (min-width: 576px) {
+    header:first-child:not(.no-sticky){  /*sticky header on mobile*/
+        position: sticky;
+        top: 0;
+        margin: 0;
+        z-index: 999;
+    } 
+}
+
 header,header nav>ul{    /*header and nav flexboxes*/
   display: flex;
   flex-flow: row wrap;
