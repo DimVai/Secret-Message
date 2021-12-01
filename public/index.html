@@ -41,7 +41,7 @@
         <label for="plainInput" class="form-label">Type your secret message here</label>
         <textarea id="plainInput" class="form-control" rows="2"></textarea>
         <br>
-        <form action="/send.html" method="post">
+        <form action="/send" method="post">
             <!-- <label for="sender" class="form-label">Optionally, type your first name or something that identifies you (unencrypted)</label>
             <input id="sender" class="form-control" name="sender">
             <br> -->
@@ -68,51 +68,31 @@
 <script>
 $(window).on('load',function(){
 
-    var publicKey = `-----BEGIN PUBLIC KEY-----
-        MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDlOJu6TyygqxfWT7eLtGDwajtN
-        FOb9I5XRb6khyfD1Yt3YiCgQWMNW649887VGJiGr/L5i2osbl8C9+WJTeucF+S76
-        xFxdU6jE0NQ+Z+zEdhUTooNRaY5nZiu5PgDB0ED/ZKBUSLKL7eibMxZtMlUDHjm4
-        gwQco1KRMDSmXSMkDwIDAQAB
-        -----END PUBLIC KEY-----`;
-    // var setPrivateKey = `-----BEGIN RSA PRIVATE KEY-----
-    //     MIICXQIBAAKBgQDlOJu6TyygqxfWT7eLtGDwajtNFOb9I5XRb6khyfD1Yt3YiCgQ
-    //     WMNW649887VGJiGr/L5i2osbl8C9+WJTeucF+S76xFxdU6jE0NQ+Z+zEdhUTooNR
-    //     aY5nZiu5PgDB0ED/ZKBUSLKL7eibMxZtMlUDHjm4gwQco1KRMDSmXSMkDwIDAQAB
-    //     AoGAfY9LpnuWK5Bs50UVep5c93SJdUi82u7yMx4iHFMc/Z2hfenfYEzu+57fI4fv
-    //     xTQ//5DbzRR/XKb8ulNv6+CHyPF31xk7YOBfkGI8qjLoq06V+FyBfDSwL8KbLyeH
-    //     m7KUZnLNQbk8yGLzB3iYKkRHlmUanQGaNMIJziWOkN+N9dECQQD0ONYRNZeuM8zd
-    //     8XJTSdcIX4a3gy3GGCJxOzv16XHxD03GW6UNLmfPwenKu+cdrQeaqEixrCejXdAF
-    //     z/7+BSMpAkEA8EaSOeP5Xr3ZrbiKzi6TGMwHMvC7HdJxaBJbVRfApFrE0/mPwmP5
-    //     rN7QwjrMY+0+AbXcm8mRQyQ1+IGEembsdwJBAN6az8Rv7QnD/YBvi52POIlRSSIM
-    //     V7SwWvSK4WSMnGb1ZBbhgdg57DXaspcwHsFV7hByQ5BvMtIduHcT14ECfcECQATe
-    //     aTgjFnqE/lQ22Rk0eGaYO80cc643BXVGafNfd9fcvwBMnk0iGX0XRsOozVt5Azil
-    //     psLBYuApa66NcVHJpCECQQDTjI2AQhFc1yRnCU/YgDnSpJVm1nASoRUnU8Jfm3Oz
-    //     uku7JUXcVpt08DFSceCEX9unCuMcT72rAQlLpdZir876
-    //     -----END RSA PRIVATE KEY-----`;
+    let publicKey = 'initial value';
+    let encryptedText = '';
     var encrypt = new JSEncrypt();
-    encrypt.setPublicKey(publicKey);
-    // var decrypt = new JSEncrypt();
-    // decrypt.setPrivateKey(setPrivateKey);
-    var encryptedText = '';
+
+    //get current public key from server
+    $.get('/publicKey',function(key){      
+        publicKey=key;
+        encrypt.setPublicKey(publicKey);
+        console.debug({publicKey});
+    });
 
     $('#plainInput').on('input',function(){   //not arrow, so this = plainInput
         if (this.value.length>1) {
             let encryptedText = encrypt.encrypt(this.value);
-            if (encryptedText == false) {
-                $('#encryptedArea').val("encryption error - try to send a smaller text");
+            if (encryptedText == false) {       //some error
+                $('#encryptedArea').val("encryption error - try to send a smaller message");
                 $('#plainInput').css('border-color', 'red').css('background-color', 'orange');
-                // $('#submitMessage').prop("disabled",true); 
-            }
-            else {
-                $('#encryptedArea').val(encryptedText)
-                $('#plainInput').css('border-color', "").css('background-color', ""); //όχι null!
+            } else {        //allright
+                $('#encryptedArea').val(encryptedText);
+                $('#plainInput').css('border-color', "").css('background-color', ""); //not null!
                 $('#submitMessage').prop("disabled",false); 
             }
-            // console.log(decrypt.decrypt(encryptedText));
-            // $('#testinput').text(decrypt.decrypt(encryptedText));
-        } else {
+        } else {    //too small message
             $('#encryptedArea').val("");
-            $('#plainInput').css('border-color', "").css('background-color', "")//όχι null!
+            $('#plainInput').css('border-color', "").css('background-color', "");   //not null!
             $('#submitMessage').prop("disabled",true); 
         }
     });

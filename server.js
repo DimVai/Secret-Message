@@ -3,27 +3,22 @@
 
 const express = require('express');
 const server = express();
-require('dotenv').config();          //it needs that! 
-const fetch = require('node-fetch');   //jshint ignore:line     
+require('dotenv').config();                         //it needs that! 
+const fetch = require('node-fetch');                //jshint ignore:line   
+const rateLimit = require('express-rate-limit');
 const {decrypt} = require('./decrypt/dim-RSA.js');  //{encrypt, decrypt}
 
 const port = process.env.PORT || 80;
 const antispam = process.env.ANTISPAM;
-const isDev = (process.env.ENVIRONMENT=='development'); 
+const isDev = (process.env.ENVIRONMENT=='Development');     //boolean
 const environment = isDev ? "Development" : "Production";
-// console.log(process.env.PUBLIC_KEY);
-// console.log(process.env.PRIVATE_KEY);
 
+//Greek time
 let presentTime = () => new Date().toLocaleString('el-GR',{hour12: false});
-/* //this is what we got from PushBullet API
-let curlString = `curl --header 'Access-Token: ${proccess.env.PUSHBULLET_API_KEY}' \
---header 'Content-Type: application/json' \
---data-binary '{"body":"You have a new Secret Message","title":"Secret","type":"note"}' \
---request POST \
-https://api.pushbullet.com/v2/pushes`;
-*/
+
+//notify me with pushBullet
 //converted cURL request (from PushBullet API - https://docs.pushbullet.com/#push) 
-//to a Noje.js request using https://curlconverter.com/#node-fetch
+//to a Noje.js request using https://curlconverter.com/#node-fetch. Check notes.txt for more
 let RequestToPushbullet = (messageBody) => {
         fetch('https://api.pushbullet.com/v2/pushes', {
         method: 'POST',
@@ -35,6 +30,13 @@ let RequestToPushbullet = (messageBody) => {
     });
 };
 
+//Rate limiting
+const limiter = rateLimit({
+    windowMs: 2 * 60 * 60 * 1000, // 2 hours
+    max: 3     // limit each IP to 3 requests per 2 hours
+    //pass: 1 req every 30+ seconds
+});
+
 //to grab post/put variables and json objects
 server.use(express.urlencoded({extended: false})); 
 server.use(express.json());
@@ -43,7 +45,7 @@ server.use(express.json());
 server.use(express.static('public'));  
 
 //get the message from user
-server.post('/send.html',function (req, res){
+server.post('/send',limiter,function (req,res){
     // console.log(req.body);
     if (req.body.antispam.trim().toLowerCase() != antispam) {
         res.status(401).send('Message not sent! Antispam is not correct');
@@ -57,6 +59,11 @@ server.post('/send.html',function (req, res){
     }
 });
 
+//send current public key to browser
+server.get('/publicKey',function(req,res){
+    res.send(process.env.PUBLIC_KEY);
+});
+
 server.listen(port, () => {
-    console.log(`\x1b[35m ${environment} server is listening at \x1b[4mhttp://localhost:${port}\x1b[0m\x1b[35m. Started at: ${presentTime()} \x1b[0m`);
+    console.log(`\x1b[35m${environment} server is listening at \x1b[4mhttp://localhost:${port}\x1b[0m\x1b[35m. Started at: ${presentTime()} \x1b[0m`);
 });

@@ -11,37 +11,41 @@
 const crypto = require("crypto");
 const privateKey = process.env.PRIVATE_KEY;
 const publicKey = process.env.PUBLIC_KEY;
-// console.log(path.resolve(__dirname,'./private.pem'));
-// console.log(privateKey);
-// console.log(publicKey);
 
 function encrypt(textToEncrypt) {
     const buffer = Buffer.from(textToEncrypt, 'utf8');
-    const encrypted = crypto.publicEncrypt({ key: publicKey, padding: 
-        crypto.constants.RSA_PKCS1_PADDING }, buffer);
+    const encrypted = crypto.publicEncrypt(
+        { 
+            key: publicKey, 
+            padding: crypto.constants.RSA_PKCS1_PADDING 
+        }, 
+        buffer,
+        );
     return encrypted.toString('base64');
-  }
-
-
+}
 
 function decrypt(textToDecrypt) {
     const buffer = Buffer.from(textToDecrypt, 'base64');
     const decrypted = crypto.privateDecrypt(
-      {
-        key: privateKey.toString(),
-        passphrase: '',
-        padding:crypto.constants.RSA_PKCS1_PADDING
-      },
-      buffer,
+        {
+            key: privateKey.toString(),
+            // passphrase: '',
+            padding:crypto.constants.RSA_PKCS1_PADDING
+        },
+        buffer,
     );
     return decrypted.toString('utf8');
-  }
+}
  
     //testing algorithms 
-    let encryptionTestingString = "Cryptography algorithms have been tested and are working properly!";
-    let enc = encrypt(encryptionTestingString);
-    // console.log(enc);
-    let dec = decrypt(enc);
+    let encryptionTestingString = "Cryptography algorithms have been tested and they are working properly!";
+    let enc = "something";
+    let dec = "something different";
+    try{
+    enc = encrypt(encryptionTestingString);
+    // console.log(enc); 
+    dec = decrypt(enc);
+    }catch(e){}
     if (encryptionTestingString==dec){
         //different colors and back to normal color
         console.log("\x1b[32m", encryptionTestingString,'\x1b[0m');  
