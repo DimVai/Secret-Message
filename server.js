@@ -11,6 +11,8 @@ const port = process.env.PORT || 80;
 const antispam = process.env.ANTISPAM;
 const isDev = (process.env.ENVIRONMENT=='development'); 
 const environment = isDev ? "Development" : "Production";
+// console.log(process.env.PUBLIC_KEY);
+// console.log(process.env.PRIVATE_KEY);
 
 let presentTime = () => new Date().toLocaleString('el-GR',{hour12: false});
 /* //this is what we got from PushBullet API
@@ -56,5 +58,5 @@ server.post('/send.html',function (req, res){
 });
 
 server.listen(port, () => {
-    console.log(`${environment} server is listening at http://localhost:${port}. Started at: ${presentTime()}`);
+    console.log(`\x1b[35m ${environment} server is listening at \x1b[4mhttp://localhost:${port}\x1b[0m\x1b[35m. Started at: ${presentTime()} \x1b[0m`);
 });

@@ -9,13 +9,8 @@
 'use stict';
 
 const crypto = require("crypto");
-const path = require("path");
-const fs = require('fs');
-
-const privateKeyPath = path.resolve(__dirname,'./private.pem');
-const publicKeyPath = path.resolve(__dirname,'./public.pem');
-const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
-const publicKey = fs.readFileSync(publicKeyPath, 'utf8');
+const privateKey = process.env.PRIVATE_KEY;
+const publicKey = process.env.PUBLIC_KEY;
 // console.log(path.resolve(__dirname,'./private.pem'));
 // console.log(privateKey);
 // console.log(publicKey);
@@ -41,14 +36,19 @@ function decrypt(textToDecrypt) {
     );
     return decrypted.toString('utf8');
   }
+ 
+    //testing algorithms 
+    let encryptionTestingString = "Cryptography algorithms have been tested and are working properly!";
+    let enc = encrypt(encryptionTestingString);
+    // console.log(enc);
+    let dec = decrypt(enc);
+    if (encryptionTestingString==dec){
+        //different colors and back to normal color
+        console.log("\x1b[32m", encryptionTestingString,'\x1b[0m');  
+    } else {
+        console.error("\x1b[31m Cryptography algorithms are not working properly \x1b[0m");        
+    }
+  
 
-  //Just for testing 
-  /*
-  let enc = encrypt("Testing encryption and decryption by Dimitris... Success!");
-  console.log(enc);
-  let dec = decrypt(enc);
-  console.log(dec);
-  */
-
- module.exports = {encrypt,decrypt};
+module.exports = {encrypt,decrypt};
 
