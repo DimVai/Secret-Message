@@ -15,14 +15,8 @@
     --defaultPadding: 0.5em;
     --defaultBorderRadius: 0.3em;
     --headerPadding: 0.8vw;
-    --headerColor: #0074d9;
     --backColorLight: lavender; 
-    --backColorBlue:#0074d9;
-    --backColorGreen: #2ecc40;
-    --backColorOrange: #ff851b;
-    --backColorRed: #ff4136;
-    --backColorGrey: #aaa;
-    --backColorPurple: #9b27b0;
+    --backColorBlue:hsl(208, 100%, 40%);
 }
 
 html {
@@ -101,46 +95,42 @@ li {
     ========================================================================== */
 
 header{
-  margin: 0 0 var(--defaultMargin) 0;
-  background-color:var(--headerColor);
-  color: white;
+    margin: 0 0 var(--defaultMargin) 0;
+    background-color:var(--backColorBlue);
+    color: white;
+    padding: max(var(--headerPadding), 0.6rem);
 }
-@media (min-width: 576px) {
-    header:first-child:not(.no-sticky){  /*sticky header on mobile*/
-        position: sticky;
-        top: 0;
-        margin: 0;
-        z-index: 999;
-    } 
-}
-
-header,header nav>ul{    /*header and nav flexboxes*/
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: center;  /*vertical aling, when big logo*/
-  list-style-type: none; 
-  padding: var(--defaultPadding);   /*looks better on mobile than headerPadding*/
-  row-gap:0.2em;
-}
-@media (max-width: 992px) {   /*center items when wrapped (on mobile)*/
-  header, header nav>ul {justify-content:space-around}
+@media (min-width:600px) { /*sticky header on desktop*/
+    header:not(.no-sticky){position:sticky;top:0;margin:0;z-index:999;} 
 }
 
 header * {    
-  margin: 0;
-  padding: 0 var(--headerPadding);
-  background-color: inherit;
-  color: white;
+    margin: 0;
+    padding: 0 var(--headerPadding);
+    background-color: inherit;
+    color: inherit;
 }
-header a, header img{
-  display: inline-block; /*Σημαντικό, αλλιώς χαλάει πχ σε header>div>a>h2, ή επειδή έχω block τα img*/
-  max-height: 5rem;   /*img attribute must be smaller*/
-}
-header a[href="#"]{display: flex;align-items: center;}
 
-    
-  
+header, header a:first-of-type, header nav>ul {    /*header, left logo, right navs*/
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;  /*vertical align, when big logo*/
+    list-style-type: none; 
+    gap: 0.7rem 0.2em;
+}
+@media (max-width:992px) {   /*trick: center items when wrapped (on tablet/mobile)*/
+    header, header nav>ul {justify-content:space-around}
+}
+
+header a, header img{       /*logo image and brand name*/
+    display: inline-block; /*Σημαντικό, αλλιώς χαλάει πχ σε header>div>a>h2, ή επειδή έχω block τα img*/
+    max-height: 5rem;   /*img attribute must be smaller*/
+}
+header a:hover, header a:focus{color: grey}
+.logo, .brand{font-size: min(calc(1rem + 0.7vw),1.5rem)}
+
+
 
       
 /* Various Weird
@@ -295,16 +285,37 @@ input:focus:not([type=submit],[type=reset]), textarea:focus, select:focus{
 .grey:is(p,h1,h2,h3,h4,span,a){color:grey}
 .white:is(p,h1,h2,h3,h4,span,a){color:white}
 
-/*For buttons th nav*/
-.red:is(button,.button,[type=button],th,nav,header), [type=reset]{background: var(--backColorRed);}
-.blue:is(button,.button,[type=button],th,nav,header){background: var(--backColorBlue);}
-.green:is(button,.button,[type=button],th,nav,header){background: var(--backColorGreen);}
-.orange:is(button,.button,[type=button],th,nav,header){background: var(--backColorOrange);}
-.purple:is(button,.button,[type=button],th,nav,header){background: var(--backColorPurple);}
-.grey:is(button,.button,[type=button],th,nav,header){background: var(--backColorGrey);}
+/*Backgrounds for buttons th nav header*/
+.red:is(button,.button,[type=button],th),[type=reset]{background:hsl(3, 100%, 41%)}
+.red:is(header,nav){background:hsl(0, 100%, 38%)}
+.blue:is(button,.button,[type=button],th,nav,header){background:var(--backColorBlue)}
+.green:is(button,.button,[type=button]){background:hsl(127, 63%, 40%)}
+.green:is(header,nav,th){background:green}
+.orange:is(button,.button,[type=button]){background:hsl(28, 100%, 55%)}
+.orange:is(header,nav,th){background:tomato}   /*hsl(14, 100%, 57%)*/
+.purple:is(button,.button,[type=button],th,nav,header){background:hsl(291, 64%, 42%)}
+.grey:is(button,.button,[type=button],th,nav,header){background:hsl(208, 7%, 46%)}
+
+.indigo:is(button,.button,[type=button],th,nav,header){background:hsl(263, 90%, 51%)}
+.teal:is(button,.button,[type=button],th,nav,header){background:hsl(162, 73%, 46%)}
+.cyan:is(button,.button,[type=button],th,nav,header){background:hsl(190, 90%, 50%)}
+.pink:is(button,.button,[type=button],th,nav,header){background:hsl(330, 67%, 52%)}
+.navy:is(button,.button,[type=button],th,nav,header){background:hsl(240, 100%, 25%)}
+.brown:is(button,.button,[type=button],th,nav,header){background:hsl(25, 76%, 31%)}
+.maroon:is(button,.button,[type=button],th,nav,header){background:hsl(0, 100%, 25%)}
+.violet:is(button,.button,[type=button],th,nav,header){background:hsl(300, 76%, 72%)}
+
+.silver{background:hsl(0, 0%, 75%)}
+.lavender{background:hsl(240, 67%, 94%)}
+.sand{background:#fdf5e6}
+.snow{background:snow}
+.pale-blue{background:#ddffff}
+.pale-red{background:#ffdddd}
+.pale-yellow{background:hs#ffffcc}
+.pale-green{background:#ddffdd}
 
 /*Slim containers*/
-.sm, .md, .lg{margin-left: auto; margin-right: auto;}
+.sm, .md, .lg{margin-inline:auto}
 .sm{max-width: var(--sm);}
 .md{max-width: var(--md);}
 .lg{max-width: var(--lg);}
@@ -312,7 +323,7 @@ input:focus:not([type=submit],[type=reset]), textarea:focus, select:focus{
 /***************     Layout classes     ********/
 .center-content{
 	display: grid;
-  place-items: center;
+    place-items: center;
 }
 .columns{
 	column-count: 2;	 /* max columns */
@@ -333,3 +344,4 @@ aside {
   font-style: italic;
   color: grey;
 }
+footer {font-size: small}

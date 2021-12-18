@@ -42,9 +42,8 @@ function decrypt(textToDecrypt) {
     let enc = "something";
     let dec = "something different";
     try{
-    enc = encrypt(encryptionTestingString);
-    // console.log(enc); 
-    dec = decrypt(enc);
+        enc = encrypt(encryptionTestingString);
+        dec = decrypt(enc);
     }catch(e){}
     if (encryptionTestingString==dec){
         //different colors and back to normal color

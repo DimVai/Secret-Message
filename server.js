@@ -1,6 +1,3 @@
-/* jshint strict:false*/
-'use stict';
-
 const express = require('express');
 const server = express();
 require('dotenv').config();                         //it needs that! 
@@ -10,8 +7,8 @@ const {decrypt} = require('./decrypt/dim-RSA.js');  //{encrypt, decrypt}
 
 const port = process.env.PORT || 80;
 const antispam = process.env.ANTISPAM;
-const isDev = (process.env.ENVIRONMENT=='Development');     //boolean
-const environment = isDev ? "Development" : "Production";
+const environment = process.env.ENVIRONMENT;
+const isDev = (environment=='Development');     //boolean
 
 //Greek time
 let presentTime = () => new Date().toLocaleString('el-GR',{hour12: false});
@@ -65,5 +62,5 @@ server.get('/publicKey',function(req,res){
 });
 
 server.listen(port, () => {
-    console.log(`\x1b[35m${environment} server is listening at \x1b[4mhttp://localhost:${port}\x1b[0m\x1b[35m. Started at: ${presentTime()} \x1b[0m`);
+    console.log(`\x1b[35m ${environment} server is listening at \x1b[4m http://localhost:${port} \x1b[0m\x1b[35m. Started at: ${presentTime()} \x1b[0m`);
 });

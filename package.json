@@ -4,7 +4,7 @@
   "description": "Send me a secret message",
   "main": "server.js",
   "scripts": {
-    "devStart": "nodemon server.js"
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "Dimitris Vainanidis",
