@@ -1,3 +1,4 @@
+'use strict';
 const express = require('express');
 const server = express();
 require('dotenv').config();                         //it needs that! 
@@ -31,7 +32,7 @@ let RequestToPushbullet = (messageBody) => {
 const limiter = rateLimit({
     windowMs: 2 * 60 * 60 * 1000, // 2 hours
     max: 3     // limit each IP to 3 requests per 2 hours
-    //pass: 1 req every 30+ seconds
+    //pass: 1 req every 40+ minutes
 });
 
 //to grab post/put variables and json objects
@@ -42,7 +43,7 @@ server.use(express.json());
 server.use(express.static('public'));  
 
 //get the message from user
-server.post('/send',limiter,function (req,res){
+server.post('/send',limiter,function(req,res){
     // console.log(req.body);
     if (req.body.antispam.trim().toLowerCase() != antispam) {
         res.status(401).send('Message not sent! Antispam is not correct');
