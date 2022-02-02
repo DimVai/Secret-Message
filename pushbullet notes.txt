@@ -7,5 +7,5 @@ let curlString = `curl --header 'Access-Token: ${proccess.env.PUSHBULLET_API_KEY
 --request POST \
 https://api.pushbullet.com/v2/pushes`; 
 
-//converted cURL request (from PushBullet API - https://docs.pushbullet.com/#push) 
-//to a Noje.js request using https://curlconverter.com/#node-fetch
+converted cURL request (from PushBullet API - https://docs.pushbullet.com/#push) 
+to a "Node.js" request using https://curlconverter.com/#node-fetch
