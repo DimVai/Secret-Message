@@ -4,5 +4,9 @@
 			"path": "."
 		}
     ],
-    "settings": {}
+    "settings": {
+		"liveServer.settings.root":"/public",
+        "liveServer.settings.host":"localhost",
+		"liveServer.settings.port":80
+	}
 }

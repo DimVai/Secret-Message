@@ -1,43 +1,25 @@
 'use strict';
 const express = require('express');
 const server = express();
-const helmet = require("helmet");
-require('dotenv').config();                         //it needs that! 
-const fetch = require('node-fetch');                //jshint ignore:line   
-const rateLimit = require('express-rate-limit');
-const {decrypt} = require('./decrypt/dim-RSA.js');  //{encrypt, decrypt}
 
+const rateLimit = require('express-rate-limit');
+const {decrypt} = require('./functions/dim-RSA.js');  //{encrypt, decrypt}
+const {RequestToPushbullet} = require('./functions/pushbullet.js');
+
+require('dotenv').config();                         //it needs that! 
 const port = process.env.PORT || 80;
 const antispam = process.env.ANTISPAM || "";
 const environment = process.env.ENVIRONMENT || '';
 const isDev = (environment=='Development');     //boolean
+
+
 //Greek time
 let presentTime = () => new Date().toLocaleString('el-GR',{hour12: false});
 
-// use helmet security headers
-server.use(
-    helmet({
-        contentSecurityPolicy:     
-            {directives: 
-                {
-                    "script-src": [ "'self'","'unsafe-inline'","ajax.googleapis.com"],
-                    "style-src": ["*","'unsafe-inline'"],
-                    "script-src-attr": ["'none'"],  // prevent scripts in (image) attributes
-                    "img-src": ["*"]
-                },
-            },
-            referrerPolicy: {policy: "same-origin"},   // strict-origin-when-cross-origin (default) |  same-origin
-            frameguard: {action: "deny"},           // X-Frame-Options
-            // hsts: false,                            // enable on Firebase projects 
-            // crossOriginEmbedderPolicy: false,       // everything on my page is CORS (crossorigin="anonymous")
-      })
-);
 
-server.use(function(req, res, next) {
-    res.header('Permissions-Policy', "camera=(),microphone=(),fullscreen=*");       // do not allow these
-    res.header('Access-Control-Allow-Origin', "*");       // it is safe, unless you run it on an intranet 
-    next();
-});
+
+// Dim standard security  
+server.use(require('./functions/security.js'));
 
 // grab post/put variables and json objects
 server.use(express.urlencoded({extended: false})); 
@@ -45,8 +27,6 @@ server.use(express.json());
 
 // static root folder
 server.use(express.static('public'));  
-
-
 
 // Rate limiting
 const limiter = rateLimit({
@@ -56,18 +36,10 @@ const limiter = rateLimit({
     // if antispam is not correct, it still counts as request!
 });
 
-// notify me with pushBullet. Check pushbullet notes.txt
-let RequestToPushbullet = (messageBody) => {
-    fetch('https://api.pushbullet.com/v2/pushes', {
-        method: 'POST',
-        headers: {
-            'Access-Token': process.env.PUSHBULLET_API_KEY,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({"body":messageBody,"title":"Secret message","type":"note"})
-    });
-};
 
+
+
+/***********************           Routing          *************************/
 
 // receive the message from user
 server.route('/send')
@@ -79,8 +51,10 @@ server.route('/send')
             let decrypted = decrypt(messageRecieved);
             let messageObject = {message:decrypted,time:presentTime()};
             console.log(messageObject);
-            if (!isDev) {RequestToPushbullet(decrypted)}
-            // res.status(202).send("Your Message was sent successfully to Dimitris!");
+            if (!isDev) {
+                RequestToPushbullet(decrypted);
+                console.log(`Message sent to pushbullet`);
+            }
             res.status(202).redirect('/ok');        // redirect so user can't refresh!
         }
     })

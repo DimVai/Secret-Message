@@ -5,9 +5,9 @@
  * @copyright Dimitris Vainanidis, 2021
  */
 
-/* jshint strict:false*/
-'use stict';
+'use strict';
 
+require('dotenv').config();   //or else, this command will be required to run before this file (in server.js)
 const crypto = require("crypto");
 const privateKey = process.env.PRIVATE_KEY;
 const publicKey = process.env.PUBLIC_KEY;
