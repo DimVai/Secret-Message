@@ -36,7 +36,8 @@ function decrypt(textToDecrypt) {
     );
     return decrypted.toString('utf8');
 }
- 
+
+function testCryptoAlgorithms(){
     //testing algorithms 
     let encryptionTestingString = "Cryptography algorithms have been tested and they are working properly!";
     let enc = "something";
@@ -46,12 +47,13 @@ function decrypt(textToDecrypt) {
         dec = decrypt(enc);
     }catch(e){}
     if (encryptionTestingString==dec){
-        //different colors and back to normal color
         console.log("\x1b[32m", encryptionTestingString,'\x1b[0m');  
+        return true;
     } else {
-        console.error("\x1b[31m Cryptography algorithms are not working properly \x1b[0m");        
+        console.error("\x1b[31m Cryptography algorithms are not working properly \x1b[0m"); 
+        return false;       
     }
-  
+}
 
-module.exports = {encrypt,decrypt};
+module.exports = {encrypt,decrypt,testCryptoAlgorithms};
 

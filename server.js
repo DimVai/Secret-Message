@@ -3,7 +3,7 @@ const express = require('express');
 const server = express();
 
 const rateLimit = require('express-rate-limit');
-const {decrypt} = require('./functions/dim-RSA.js');  //{encrypt, decrypt}
+const {decrypt,testCryptoAlgorithms} = require('./functions/dim-RSA.js');  //{encrypt, decrypt}
 const {RequestToPushbullet} = require('./functions/pushbullet.js');
 
 require('dotenv').config();                         //it needs that! 
@@ -71,7 +71,13 @@ server.get('/publicKey',function(req,res){
     
 
 
-// start server
-server.listen(port, () => {
-    console.log(`\x1b[35m ${environment} server is listening at \x1b[4m http://localhost:${port} \x1b[0m\x1b[35m. Started at: ${presentTime()} \x1b[0m`);
-});
+// start server if algorithms are working properly
+let testAlgorithms = testCryptoAlgorithms();
+if (testAlgorithms){
+    server.listen(port, () => {
+        console.log(`\x1b[35m ${environment} server is listening at \x1b[4m http://localhost:${port} \x1b[0m\x1b[35m. Started at: ${presentTime()} \x1b[0m`);
+    });
+} else {
+    console.error("\x1b[31m Server is not starting! \x1b[0m");
+    process.exit();
+}
