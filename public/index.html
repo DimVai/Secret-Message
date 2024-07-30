@@ -11,7 +11,8 @@
     <link rel="stylesheet" media="screen" href="landing.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="jsencrypt.min.js"></script>
+    <!-- <script src="jsencrypt.js"></script> -->
+    <script src="forge.all.min.js"></script>
     
 
     <style>
@@ -49,38 +50,49 @@
         </form>
         
         <hr>
-        <p><small>Encryption algorithm: <br> RSA, implemented by <a href="https://github.com/travist/jsencrypt" target="_blank">travist / jsencrypt</a></small><br/>
+        <!-- <p><small>Encryption algorithm: <br> RSA, implemented by <a href="https://github.com/travist/jsencrypt" target="_blank">travist / jsencrypt</a></small><br/>
             <small>Decryption algorithm: <br>  RSA, implemented by <a href="https://nodejs.org/api/crypto.html" target="_blank">crypto </a>(node.js package)</small></p>
-            
+             -->
         <!-- <div id="testinput"></div> -->
     </main>
 
     <footer>
-        <p>©2021 Dimitris Vainanidis</p>
+        <p>©2024 Dimitris Vainanidis</p>
         <br>
     </footer>
 
-<script>
-$(window).on('load',function(){
+
+<script type="module">
 
     let publicKey = 'initial value';
     let encryptedText = '';
-    var RSA = new JSEncrypt();
-
-    //get current public key from server
+        //get current public key from server
     $.get('/publicKey',function(key){      
         publicKey=key;
-        RSA.setPublicKey(publicKey);
         console.debug({publicKey});
     });
 
-    $('#plainInput').on('input',function(){   //not arrow, so this = plainInput
+    function encrypt(textToEncrypt) {
+        const forgePublicKey = forge.pki.publicKeyFromPem(publicKey);
+        const encrypted = forgePublicKey.encrypt(textToEncrypt, 'RSA-OAEP', {
+            md: forge.md.sha256.create()
+        });
+        return forge.util.encode64(encrypted);
+    }
+
+
+
+    $('#plainInput').on('input', async function(){   //not arrow, so this = plainInput
         if (this.value.length>1) {
-            encryptedText = RSA.encrypt(this.value);
-            if (encryptedText == false) {       //some error
+            try {
+                encryptedText = encrypt(this.value);
+            } catch (error) {
+                console.error(error);
+                encryptedText = '';
                 $('#encryptedArea').val("encryption error - try to send a smaller message");
                 $('#plainInput').css('border-color', 'red').css('background-color', 'orange');
-            } else {        //allright
+            }
+            if (encryptedText.length) {       //allright
                 $('#encryptedArea').val(encryptedText);
                 $('#plainInput').css('border-color', "").css('background-color', ""); //not null!
                 $('#submitMessage').prop("disabled",false); 
@@ -92,7 +104,6 @@ $(window).on('load',function(){
         }
     });
 
-});
 </script>
 
 

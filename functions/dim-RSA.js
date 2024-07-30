@@ -17,10 +17,11 @@ function encrypt(textToEncrypt) {
     const encrypted = crypto.publicEncrypt(
         { 
             key: publicKey, 
-            padding: crypto.constants.RSA_PKCS1_PADDING 
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+            oaepHash: "sha256"
         }, 
-        buffer,
-        );
+        buffer
+    );
     return encrypted.toString('base64');
 }
 
@@ -29,10 +30,10 @@ function decrypt(textToDecrypt) {
     const decrypted = crypto.privateDecrypt(
         {
             key: privateKey.toString(),
-            // passphrase: '',
-            padding:crypto.constants.RSA_PKCS1_PADDING
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+            oaepHash: "sha256"
         },
-        buffer,
+        buffer
     );
     return decrypted.toString('utf8');
 }
@@ -45,7 +46,9 @@ function testCryptoAlgorithms(){
     try{
         enc = encrypt(encryptionTestingString);
         dec = decrypt(enc);
-    }catch(e){}
+    }catch(e){
+        console.error(e);
+    }
     if (encryptionTestingString==dec){
         console.log("\x1b[32m", encryptionTestingString,'\x1b[0m');  
         return true;
